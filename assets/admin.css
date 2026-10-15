@@ -1,0 +1,10 @@
+/* Theme File Editor and Plugin File Editor screens: the editor fills the screen below the admin bar. */
+#wpcontent { padding-left: 0; }
+#wpbody-content { padding-bottom: 0; }
+#wpfooter { display: none; }
+.code-workbench { display: flex; flex-direction: column; height: calc(100vh - var(--wp-admin--admin-bar--height, 32px)); margin: 0; }
+.code-workbench-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 8px 20px; }
+.code-workbench-bar h1, .code-workbench-bar h2 { margin: 0; padding: 0; }
+.code-workbench-bar .code-workbench-select { margin-left: auto; }
+.code-workbench-bar form { display: inline-block; margin: 0; }
+.code-workbench-frame { flex: 1; width: 100%; border: 0; }

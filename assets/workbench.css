@@ -1,0 +1,5 @@
+/* Source Control, Run and Debug, Extensions, Accounts and the AI chat have nothing to work with on a WordPress site. */
+.monaco-workbench .action-item:has(> .codicon-source-control-view-icon, > .codicon-run-view-icon, > .codicon-extensions-view-icon, > .codicon-accounts-view-bar-icon),
+.monaco-workbench #chat\.statusBarEntry {
+	display: none !important;
+}

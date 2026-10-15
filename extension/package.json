@@ -1,0 +1,32 @@
+{
+	"name": "files",
+	"publisher": "code-workbench",
+	"displayName": "WordPress Files",
+	"description": "Plugins and themes of the WordPress site, through the REST API.",
+	"version": "1.0.0",
+	"license": "GPL-2.0-or-later",
+	"engines": {
+		"vscode": "^1.90.0"
+	},
+	"browser": "./extension.js",
+	"activationEvents": [
+		"onFileSystem:wordpress",
+		"onSearch:wordpress"
+	],
+	"enabledApiProposals": [
+		"fileSearchProvider",
+		"textSearchProvider"
+	],
+	"contributes": {
+		"resourceLabelFormatters": [
+			{
+				"scheme": "wordpress",
+				"formatting": {
+					"label": "${path}",
+					"separator": "/",
+					"workspaceSuffix": "WordPress"
+				}
+			}
+		]
+	}
+}
