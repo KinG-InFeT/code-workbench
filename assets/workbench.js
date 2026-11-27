@@ -28,6 +28,8 @@ create( document.body, {
 		'workbench.editor.languageDetection': false,
 		// The editor makes no external requests (schemas.wp.org would fail CORS anyway).
 		'json.schemaDownload.enable': false,
+		// As in VS Code desktop, where the (left out) Markdown extension sets it.
+		'[markdown]': { 'editor.wordWrap': 'on' },
 	},
 	windowIndicator: {
 		label: `$(globe) ${ config.siteName }`,

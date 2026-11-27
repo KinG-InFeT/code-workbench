@@ -169,11 +169,15 @@ class Code_Workbench_Admin {
 	 */
 	private static function render_workbench( $screen ) {
 		$vscode = plugins_url( 'vscode/' . CODE_WORKBENCH_VSCODE, CODE_WORKBENCH_FILE );
-		$config = array(
+		// A release ships the extension as extension-<version> (bin/package.sh): a new folder per
+		// version keeps browsers from running a cached copy after an update. A ?ver query would
+		// not do, VS Code ties an extension to the URL of its folder.
+		$extension = 'extension-' . CODE_WORKBENCH_VERSION;
+		$config    = array(
 			'workbench' => $vscode . '/out/vs/workbench/workbench.web.main.internal.js',
 			// Webviews load from the plugin instead of Microsoft's CDN.
 			'webviews'  => $vscode . '/out/vs/workbench/contrib/webview/browser/pre/',
-			'extension' => plugins_url( 'extension', CODE_WORKBENCH_FILE ),
+			'extension' => plugins_url( is_dir( dirname( CODE_WORKBENCH_FILE ) . '/' . $extension ) ? $extension : 'extension', CODE_WORKBENCH_FILE ),
 			'folder'    => '/' . $screen['item'],
 			'siteName'  => wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES ),
 			// Handed to the WordPress extension through the "codeWorkbench.config" command.

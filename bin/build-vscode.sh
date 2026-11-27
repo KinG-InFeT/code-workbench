@@ -7,6 +7,7 @@
 #
 # Usage: bin/build-vscode.sh [source-dir]
 # Needs git, rsync and the Node.js major version named in the source's .nvmrc.
+# The pnpm version pinned by the source (packageManager) runs through npx.
 
 set -euo pipefail
 
@@ -43,7 +44,7 @@ product.builtInExtensions = [];
 product.webBuiltInExtensions = [];
 fs.writeFileSync("product.json", JSON.stringify(product, null, "\t"));
 
-// wordpress.org rejects file names with spaces or special characters, such as
+// Plain file names, safe to serve and unzip on any host: no spaces or brackets, as in
 // "Regular Expressions (JavaScript).tmLanguage". The workbench embeds the manifests at
 // build time, so the grammars are renamed in the source.
 for (const name of fs.readdirSync("extensions")) {
@@ -59,19 +60,26 @@ for (const name of fs.readdirSync("extensions")) {
 	}
 }
 
-// The build also bundles the webview scripts of a fixed list of extensions.
+// The build also bundles the webview scripts of a fixed list of extensions, and compiles a
+// fixed list of extension tsconfig.json files: the deleted ones go.
 const build = "build/lib/extensions.ts";
 fs.writeFileSync(build, fs.readFileSync(build, "utf8").split("\n").filter(line => {
 	const media = /^\s*\{ script: \x27([^/]+)\//.exec(line);
 	return !media || fs.existsSync("extensions/" + media[1]);
 }).join("\n"));
+const compilations = "build/gulpfile.extensions.ts";
+fs.writeFileSync(compilations, fs.readFileSync(compilations, "utf8").split("\n").filter(line => {
+	const tsconfig = /^\s*\x27([^\x27]+\/tsconfig\.json)\x27,\s*$/.exec(line);
+	return !tsconfig || fs.existsSync(tsconfig[1]);
+}).join("\n"));
 '
 
-# Install scripts only build the native modules of the desktop app and the server.
-for dir in . build extensions remote/web extensions/*/ extensions/*/server/; do
-	if [ -f "$dir/package-lock.json" ]; then
-		(cd "$dir" && npm ci --ignore-scripts --no-audit --no-fund)
-	fi
+# The pnpm workspace of the root (with the built-in extensions), and the separate install
+# roots build/ and remote/ (with remote/web). Install scripts only build the native modules
+# of the desktop app and the server, and the root postinstall would install every root with them.
+PNPM="npx --yes pnpm@$(node -p 'require("./package.json").packageManager.split("@")[1]')"
+for dir in . build remote; do
+	(cd "$dir" && $PNPM install --frozen-lockfile --ignore-scripts)
 done
 
 npm run gulp vscode-web-min
@@ -88,7 +96,5 @@ for module in $MODULES; do
 	mkdir -p "$DEST/node_modules/$(dirname "$module")"
 	cp -r "$OUT/node_modules/$module" "$DEST/node_modules/$module"
 done
-# wordpress.org rejects hidden files (.npmrc of the language servers).
-find "$DEST" -name '.*' -type f -delete
 
 du -sh "$DEST"

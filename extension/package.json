@@ -3,7 +3,7 @@
 	"publisher": "code-workbench",
 	"displayName": "WordPress Files",
 	"description": "Plugins and themes of the WordPress site, through the REST API.",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"license": "GPL-2.0-or-later",
 	"engines": {
 		"vscode": "^1.90.0"
@@ -27,6 +27,110 @@
 					"workspaceSuffix": "WordPress"
 				}
 			}
-		]
+		],
+		"views": {
+			"codeWorkbenchMcp": [
+				{
+					"id": "codeWorkbench.mcpConnect",
+					"name": "Connect"
+				},
+				{
+					"id": "codeWorkbench.mcpTokens",
+					"name": "Access Tokens"
+				}
+			]
+		},
+		"viewsWelcome": [
+			{
+				"view": "codeWorkbench.mcpConnect",
+				"contents": "AI assistants such as Claude, ChatGPT, Cursor or VS Code can work on the plugins and themes of this site through MCP, with an access token.\n[$(plug) Show Connection Settings](command:codeWorkbench.mcp.settings)\n[$(add) Create Access Token](command:codeWorkbench.mcp.create)\nA token reaches the plugin and theme folders only: never the WordPress files, the uploads or the database. A read and write token can change code that runs on the site."
+			},
+			{
+				"view": "codeWorkbench.mcpTokens",
+				"contents": "No access tokens yet.\n[Create Access Token](command:codeWorkbench.mcp.create)"
+			}
+		],
+		"commands": [
+			{
+				"command": "codeWorkbench.mcp.create",
+				"title": "Create MCP Access Token",
+				"category": "Code Workbench",
+				"icon": "$(add)"
+			},
+			{
+				"command": "codeWorkbench.mcp.settings",
+				"title": "Show MCP Connection Settings",
+				"category": "Code Workbench",
+				"icon": "$(plug)"
+			},
+			{
+				"command": "codeWorkbench.mcp.refresh",
+				"title": "Refresh MCP Access Tokens",
+				"category": "Code Workbench",
+				"icon": "$(refresh)"
+			},
+			{
+				"command": "codeWorkbench.mcp.regenerate",
+				"title": "Regenerate",
+				"category": "Code Workbench",
+				"icon": "$(sync)"
+			},
+			{
+				"command": "codeWorkbench.mcp.revoke",
+				"title": "Revoke",
+				"category": "Code Workbench",
+				"icon": "$(trash)"
+			}
+		],
+		"menus": {
+			"view/title": [
+				{
+					"command": "codeWorkbench.mcp.create",
+					"when": "view == codeWorkbench.mcpTokens",
+					"group": "navigation@1"
+				},
+				{
+					"command": "codeWorkbench.mcp.settings",
+					"when": "view == codeWorkbench.mcpTokens",
+					"group": "navigation@2"
+				},
+				{
+					"command": "codeWorkbench.mcp.refresh",
+					"when": "view == codeWorkbench.mcpTokens",
+					"group": "navigation@3"
+				}
+			],
+			"view/item/context": [
+				{
+					"command": "codeWorkbench.mcp.regenerate",
+					"when": "view == codeWorkbench.mcpTokens && viewItem == token.mine",
+					"group": "inline@1"
+				},
+				{
+					"command": "codeWorkbench.mcp.revoke",
+					"when": "view == codeWorkbench.mcpTokens",
+					"group": "inline@2"
+				}
+			],
+			"commandPalette": [
+				{
+					"command": "codeWorkbench.mcp.regenerate",
+					"when": "false"
+				},
+				{
+					"command": "codeWorkbench.mcp.revoke",
+					"when": "false"
+				}
+			]
+		},
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "codeWorkbenchMcp",
+					"title": "AI Access (MCP)",
+					"icon": "$(mcp)"
+				}
+			]
+		}
 	}
 }
